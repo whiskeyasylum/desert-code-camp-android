@@ -19,7 +19,7 @@ public class Model implements Serializable
     }
     
     public static ArrayList<Model> getAll(){
-        Request requet = new Request(GET_ALL);
+//        Request requet = new Request(GET_ALL);
         
         return new ArrayList<Model>();
     }
