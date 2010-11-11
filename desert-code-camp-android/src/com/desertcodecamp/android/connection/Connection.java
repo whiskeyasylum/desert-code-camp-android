@@ -1,11 +1,11 @@
 package com.desertcodecamp.android.connection;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Set;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -19,92 +19,46 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
+
 import com.desertcodecamp.android.DesertCodeCampApplication;
 import com.desertcodecamp.android.stubs.StubbedConnection;
-import com.desertcodecamp.android.util.Miscellaneous;
 
 public class Connection
 {
     public static final String ERROR_FAILURE_TO_CONNECT_TO_SERVER = "{\"error\": \"Failure to connect to server\"}";
     public static String DEFAULTSERVER = DesertCodeCampApplication.SERVER;
 
-    private Handler uiThread;
-    private Thread connectionThread;
-
     private HttpClient httpClient;
+    private Request request;
     public String server;
 
-    protected Connection(Handler uiThread, String server)
+    protected Connection(String server, Request request)
     {
-        this.uiThread = uiThread;
+    	this.request = request;
+    	this.server = server;
         this.httpClient = new DefaultHttpClient();
-        this.server = server;
     }
-
-    public static Connection build(Handler uiThread)
+    
+    public static Connection build(Request request)
     {
-        return build(uiThread, DEFAULTSERVER);
+    	return build(DEFAULTSERVER, request);
     }
 
-    public static Connection build(Handler uiThread, String server)
+    public static Connection build(String server, Request request)
     {
         if (DesertCodeCampApplication.DEBUG)
-            return new StubbedConnection(uiThread, server);
+            return new StubbedConnection(server, request);
         else
-            return new Connection(uiThread, server);
+            return new Connection(server, request);
     }
 
     /**
-     * Executes an Http request in a separate thread. Will send a message containing
-     * the Server response to the handler provided in the constructor. 
+     * Executes an http request to the Server response to the handler provided in the 
+     * constructor. Passes in the remember token if the user is already authenticated.
      * 
-     * Passes in the remember token if the user is already authenticated.
-     * 
-     * @param enumerator will return this request code as the key to the server response
      * @param request Request object with proper Method, path and post data 
      */
-    @SuppressWarnings("rawtypes")
-    public void connect(final Enum enumerator, final Request request)
-    {
-        connect(enumerator.toString(), request);
-    }
-
-    /**
-     * Executes an Http request in a separate thread. Will send a message containing
-     * the Server response to the handler provided in the constructor. 
-     * 
-     * Passes in the remember token if the user is already authenticated.
-     * 
-     * @param requestCode will return this request code as the key to the server response
-     * @param request Request object with proper Method, path and post data 
-     */
-    public void connect(final String requestCode, final Request request)
-    {
-        this.connectionThread = new Thread(new Runnable() {
-
-            public void run()
-            {
-                String json;
-                try {
-                    json = execute(requestCode, request);
-                } catch (UnsupportedEncodingException e) {
-                    json = "{\"error\": \"Unsupported encoding exception\"}";
-                    Log.e(DesertCodeCampApplication.TAG, e.toString());
-                }
-                sendString(requestCode, json);
-
-            }
-        });
-
-        this.connectionThread.start();
-
-    }
-
-    public String execute(String requestCode, Request request) throws UnsupportedEncodingException
+    public Response execute() throws UnsupportedEncodingException
     {
         HttpUriRequest httpRequest = getHttpRequest(request);
 
@@ -114,23 +68,16 @@ public class Connection
             httpRequest = urlEncodeData(request, httpRequest);
 
         HttpResponse response = null;
-        String contentString = ERROR_FAILURE_TO_CONNECT_TO_SERVER;
 
         try {
             response = httpClient.execute(httpRequest);
-            InputStream content = response.getEntity().getContent();
-
-            if (response.getStatusLine().getStatusCode() < 300)
-                contentString = Miscellaneous.convertStreamToString(content);
-
-            content.close();
         } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return contentString;
+        return new Response(response);
     }
 
     private HttpUriRequest getHttpRequest(Request request)
@@ -192,15 +139,5 @@ public class Connection
     {
         String value = request.get(key);
         return new BasicNameValuePair(key, value);
-    }
-
-    private void sendString(String requestCode, String value)
-    {
-        Bundle data = new Bundle();
-        data.putString(requestCode, value);
-
-        Message message = Message.obtain();
-        message.setData(data);
-        uiThread.sendMessage(message);
     }
 }

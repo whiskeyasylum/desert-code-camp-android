@@ -20,21 +20,5 @@ public class Sessions extends CodeCampActivity  {
 		// Show loading dialog
 		loadingDialog = DialogHelper.showLoadingDialog(this, "Loading sessions");
 		
-		// Start loading sessions
-		connector.requestSessions();
 	}
-	
-	@Override
-	public void handleConnectorCallback(int type, Object data) {
-		super.handleConnectorCallback(type, data);
-		
-		// Build and bind LV adapter from Session object
-		session = (Session) data;
-		adapter = new ModelListAdapter(session);
-		setListAdapter(adapter);
-		
-		// Dismiss dialog
-		DialogHelper.dismissDialog(loadingDialog);
-	}
-
 }

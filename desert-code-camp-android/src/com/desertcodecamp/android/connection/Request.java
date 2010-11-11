@@ -1,5 +1,6 @@
 package com.desertcodecamp.android.connection;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ public class Request {
     private String path;
     private Method method;
     private HashMap<String, String> data;
+    private Connection connection;
 
     /**
      * Creates a GET request for the url
@@ -36,6 +38,7 @@ public class Request {
         this.path = path;
         this.method = method;
         this.data = new HashMap<String,String>();
+        this.connection = Connection.build(this);
     }
     
     /**
@@ -143,5 +146,15 @@ public class Request {
     public String get(String key)
     {
         return data.get(key);
+    }
+    
+    /**
+     * Executes the request
+     * 
+     * @return the server response
+     * @throws UnsupportedEncodingException 
+     */
+    public Response execute() throws UnsupportedEncodingException {
+    	return connection.execute();
     }
 }
