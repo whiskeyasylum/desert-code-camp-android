@@ -27,5 +27,4 @@ public class Session extends Model
     public static <T extends Model> ArrayList<T> getAll() throws UnsupportedEncodingException, JSONException{
 		return getAll(GET_ALL, Session.class);
 	}
-    
 }

@@ -55,7 +55,7 @@ public class Response {
 		}
 	}
 
-	private static String streamToString(InputStream is) throws IOException {
+	public static String streamToString(InputStream is) throws IOException {
 		/*
          * To convert the InputStream to String we use the
          * BufferedReader.readLine() method. We iterate until the BufferedReader

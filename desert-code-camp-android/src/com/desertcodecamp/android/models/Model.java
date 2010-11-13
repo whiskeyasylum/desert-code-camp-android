@@ -5,13 +5,10 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.util.Log;
-
 import com.desertcodecamp.android.DesertCodeCampApplication;
 import com.desertcodecamp.android.connection.Request;
 import com.desertcodecamp.android.connection.Response;
@@ -20,9 +17,13 @@ public class Model implements Serializable
 {
     private static final long serialVersionUID = 2664088878505586275L;
     
-    protected String GET_INSTANCE = null;
     protected static String GET_ALL = "";
+    private static ArrayList<Model> cachedModels;
+    
+
+    protected String GET_INSTANCE = null;
     protected String GET_ALL_BY_PARENT_ID = null;
+    
     
 	protected JSONObject jsonObject;
 
@@ -58,7 +59,11 @@ public class Model implements Serializable
      * @throws NoSuchMethodException 
      * @throws SecurityException 
      */
+    @SuppressWarnings("unchecked")
     protected static <T extends Model> ArrayList<T> getAll(String path, Class<?> subclass) throws UnsupportedEncodingException, JSONException {
+        if(Model.cachedModels != null)
+            return (ArrayList<T>)Model.cachedModels;
+        
         Request request = new Request(path);
         Response response = request.execute();
         
@@ -72,7 +77,6 @@ public class Model implements Serializable
 				try {
 					Constructor<?> constructor = subclass.getConstructor(String.class);
 					
-					@SuppressWarnings("unchecked")
 					T model = (T) constructor.newInstance(jsonArray.getString(i));
 					models.add(model);
 				} catch (SecurityException e) {
@@ -94,6 +98,16 @@ public class Model implements Serializable
 		} 
         
         return new ArrayList<T>();
+    }
+    
+    /**
+     * @param <T>
+     * @return the cachedModels
+     */
+    @SuppressWarnings({ "unchecked", "unused" })
+    private static <T extends Model> ArrayList<T> getCachedModels()
+    {
+        return (ArrayList<T>)cachedModels;
     }
 }
  
