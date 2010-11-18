@@ -3,6 +3,7 @@ package com.desertcodecamp.android.models;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
+import com.integrumtech.android.busybot.models.Model;
 import org.json.JSONException;
 
 public class Session extends Model

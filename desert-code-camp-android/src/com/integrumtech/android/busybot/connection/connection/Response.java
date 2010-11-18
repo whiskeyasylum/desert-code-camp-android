@@ -1,4 +1,4 @@
-package com.desertcodecamp.android.connection;
+package com.integrumtech.android.busybot.connection.connection;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/desert-code-camp-android/Desert-code-camp-android.iml" filepath="$PROJECT_DIR$/desert-code-camp-android/Desert-code-camp-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/desert-code-camp-android-test/desert-code-camp-android-test.iml" filepath="$PROJECT_DIR$/desert-code-camp-android-test/desert-code-camp-android-test.iml" />
+    </modules>
+  </component>
+</project>
+

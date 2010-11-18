@@ -1,4 +1,4 @@
-package com.desertcodecamp.android.connection;
+package com.integrumtech.android.busybot.connection.connection;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -152,7 +152,7 @@ public class Request {
      * Executes the request
      * 
      * @return the server response
-     * @throws UnsupportedEncodingException 
+     * @throws UnsupportedEncodingException Thrown if one of the key/value pairs in the request are improper
      */
     public Response execute() throws UnsupportedEncodingException {
     	return connection.execute();

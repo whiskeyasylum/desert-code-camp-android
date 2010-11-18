@@ -12,7 +12,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 import com.desertcodecamp.android.DesertCodeCampApplication;
-import com.desertcodecamp.android.connection.Request;
+import com.integrumtech.android.busybot.connection.connection.Request;
 
 public class Miscellaneous {
     public static boolean showClipToast(Context context, Bundle data, String key) {

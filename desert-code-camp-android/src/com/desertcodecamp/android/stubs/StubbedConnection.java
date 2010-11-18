@@ -1,7 +1,7 @@
 package com.desertcodecamp.android.stubs;
 
-import com.desertcodecamp.android.connection.Connection;
-import com.desertcodecamp.android.connection.Request;
+import com.integrumtech.android.busybot.connection.connection.Connection;
+import com.integrumtech.android.busybot.connection.connection.Request;
 
 public class StubbedConnection extends Connection {
 

@@ -1,4 +1,16 @@
-package com.desertcodecamp.android.connection;
+package com.integrumtech.android.busybot.connection.connection;
+
+import android.util.Log;
+import com.desertcodecamp.android.DesertCodeCampApplication;
+import com.desertcodecamp.android.stubs.StubbedConnection;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.*;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -6,27 +18,9 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Set;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
-import com.desertcodecamp.android.DesertCodeCampApplication;
-import com.desertcodecamp.android.stubs.StubbedConnection;
-
 public class Connection
 {
-    public static final String ERROR_FAILURE_TO_CONNECT_TO_SERVER = "{\"error\": \"Failure to connect to server\"}";
-    public static String DEFAULTSERVER = DesertCodeCampApplication.SERVER;
+    public static String DEFAULT_SERVER = DesertCodeCampApplication.SERVER;
 
     private HttpClient httpClient;
     private Request request;
@@ -41,7 +35,7 @@ public class Connection
     
     public static Connection build(Request request)
     {
-    	return build(DEFAULTSERVER, request);
+    	return build(DEFAULT_SERVER, request);
     }
 
     public static Connection build(String server, Request request)
@@ -56,7 +50,8 @@ public class Connection
      * Executes an http request to the Server response to the handler provided in the 
      * constructor. Passes in the remember token if the user is already authenticated.
      * 
-     * @param request Request object with proper Method, path and post data 
+     * @throws java.io.UnsupportedEncodingException Thrown if one of the key/value pairs in the request are improper
+     * @return a Response instance that contains all of the return data from the HttpRequest
      */
     public Response execute() throws UnsupportedEncodingException
     {
@@ -65,7 +60,7 @@ public class Connection
         if (request.canEncloseData() && request.hasData())
             httpRequest = attachPostData(request, (HttpEntityEnclosingRequestBase)httpRequest);
         else if (request.hasData())
-            httpRequest = urlEncodeData(request, httpRequest);
+            httpRequest = urlEncodeData(request);
 
         HttpResponse response = null;
 
@@ -105,8 +100,14 @@ public class Connection
         return httpRequest;
     }
 
-    private HttpUriRequest attachPostData(Request request, HttpEntityEnclosingRequestBase httpRequest) throws UnsupportedEncodingException
-    {
+    /**
+     * Attaches the post data to the request
+     * @param request the request with key value pairs to attach
+     * @param httpRequest the request to attach the data to
+     * @return the request with post data added
+     * @throws UnsupportedEncodingException Thrown if one of the key/value pairs in the request are improper
+     */
+    private HttpUriRequest attachPostData(Request request, HttpEntityEnclosingRequestBase httpRequest) throws UnsupportedEncodingException {
         Set<String> keyset = request.keySet();
         ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(keyset.size());
 
@@ -118,7 +119,7 @@ public class Connection
         return httpRequest;
     }
 
-    private HttpUriRequest urlEncodeData(Request request, HttpUriRequest httpRequest)
+    private HttpUriRequest urlEncodeData(Request request)
     {
         String path = request.getPath();
         Set<String> keyset = request.keySet();
@@ -126,7 +127,11 @@ public class Connection
         String urlData = "";
 
         for (String key : keyset)
-            urlData += "&" + URLEncoder.encode(key) + "=" + URLEncoder.encode(request.get(key));
+            try {
+                urlData += "&" + URLEncoder.encode(key, "UTF-8") + "=" + URLEncoder.encode(request.get(key), "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                Log.e(DesertCodeCampApplication.TAG, e.getStackTrace().toString());
+            }
 
         String encodedPath = path + "?" + urlData.substring(1);
 
