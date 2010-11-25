@@ -52,6 +52,7 @@ public class Request {
     /**
      * @param path the url to set
      */
+    @SuppressWarnings("unused")
     public void setPath(String path)
     {
         this.path = path;
@@ -68,6 +69,7 @@ public class Request {
     /**
      * @param method the method to set
      */
+    @SuppressWarnings("unused")
     public void setMethod(Method method)
     {
         this.method = method;
@@ -76,6 +78,7 @@ public class Request {
     /**
      * @return the serialversionuid
      */
+    @SuppressWarnings("unused")
     public static long getSerialversionuid()
     {
         return serialVersionUID;
@@ -90,7 +93,8 @@ public class Request {
     public static enum Method {
         
         GET, POST, PUT, DELETE, NOVALUE;
-        
+
+        @SuppressWarnings("unused")
         public static Method toMethod(String str)
         {
             try {
@@ -128,11 +132,13 @@ public class Request {
      * Appends string to the path
      * @param string to append to the path
      */
+    @SuppressWarnings("unused")
     public void appendToPath(String string)
     {
         path += string;
     }
 
+    @SuppressWarnings("unused")
     public void put(String key, String value)
     {
         data.put(key, value);

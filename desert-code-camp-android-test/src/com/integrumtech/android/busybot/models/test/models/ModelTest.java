@@ -10,7 +10,5 @@ public class ModelTest extends TestCase {
      * Sets up a Model instance
      */
     protected void setUp() {
-        Model mockedModel = mock(Model.class);
-        
     }
 }

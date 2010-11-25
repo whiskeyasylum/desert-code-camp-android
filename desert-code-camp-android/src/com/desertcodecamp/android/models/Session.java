@@ -2,6 +2,7 @@ package com.desertcodecamp.android.models;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.integrumtech.android.busybot.models.Model;
 import org.json.JSONException;
@@ -25,7 +26,7 @@ public class Session extends Model
         return name;
     }
     
-    public static <T extends Model> ArrayList<T> getAll() throws UnsupportedEncodingException, JSONException{
+    public static <T extends Model> HashMap<Integer, T> getAll() throws UnsupportedEncodingException, JSONException{
 		return getAll(GET_ALL, Session.class);
 	}
 }

@@ -2,6 +2,9 @@ package com.desertcodecamp.android.views;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import com.integrumtech.android.busybot.models.Model;
 import org.json.JSONException;
 import android.app.AlertDialog;
 import android.os.AsyncTask;
@@ -32,7 +35,7 @@ public class Sessions extends CodeCampActivity
                 Bundle bundle = new Bundle();
 
                 try {
-                    ArrayList<Session> sessions = Session.getAll();
+                    HashMap<Integer, Session> sessions = Session.getAll();
                     bundle.putSerializable(SESSIONS, sessions);
                 } catch (UnsupportedEncodingException e) {
                     Log.e(DesertCodeCampApplication.TAG, e.getStackTrace().toString());
